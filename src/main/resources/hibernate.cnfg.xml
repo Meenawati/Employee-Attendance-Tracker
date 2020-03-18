@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		
+		<property name="hibernate.id.new_generator_mappings">false</property>
+		
+		<property name="hibernate.connection.driver_class">
+			com.mysql.cj.jdbc.Driver
+		</property>
+		
+		<property name="hibernate.connection.url">
+			jdbc:mysql://localhost/employee_attendance_tracker
+		</property>
+		
+		<property name="hibernate.connection.username">root</property>
+		
+		<property name="hibernate.connection.password">root</property>
+		
+		<property name="show_sql">false</property>
+	
+		
+		<mapping class="com.divinisoft.project.hibernate.entity.Employee"/>
+		<mapping class="com.divinisoft.project.hibernate.entity.VacationType"/>
+		<mapping class="com.divinisoft.project.hibernate.entity.VacationDetail"/>
+	</session-factory>
+</hibernate-configuration>
