@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity(name = "vacation_type")
-public class VacationType {
+public class VacationTypeDTO {
 
 	@Id
 	@GeneratedValue
@@ -17,11 +17,11 @@ public class VacationType {
 	@Column(name = "total_days")
 	private int days;
 
-	public VacationType() {
+	public VacationTypeDTO() {
 
 	}
 
-	public VacationType(String vacationType, int days) {
+	public VacationTypeDTO(String vacationType, int days) {
 		this.vacationType = vacationType;
 		this.days = days;
 	}

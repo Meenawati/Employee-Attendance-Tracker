@@ -11,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity(name = "employee_detail")
-public class Employee {
+public class EmployeeDTO {
 	@Id
 	@GeneratedValue
 	@Column(name = "employee_id")
@@ -22,14 +22,14 @@ public class Employee {
 	private double salary;	
 	@OneToMany
 	@JoinColumn(name = "employee_id")
-	private List<VacationDetail> vacationDetails = new ArrayList<VacationDetail>();
+	private List<VacationDetailDTO> vacationDetails = new ArrayList<VacationDetailDTO>();
 	
-	public Employee() {
+	public EmployeeDTO() {
 	}
 
 	
 
-	public Employee(String name, int age, String department, double salary) {
+	public EmployeeDTO(String name, int age, String department, double salary) {
 		super();
 		this.name = name;
 		this.age = age;
@@ -37,11 +37,11 @@ public class Employee {
 		this.salary = salary;
 	}
 	
-	public List<VacationDetail> getVacationDetails() {
+	public List<VacationDetailDTO> getVacationDetails() {
 		return vacationDetails;
 	}
 
-	public void setVacationDetails(List<VacationDetail> vacationDetails) {
+	public void setVacationDetails(List<VacationDetailDTO> vacationDetails) {
 		this.vacationDetails = vacationDetails;
 	}
 

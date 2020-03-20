@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.NaturalId;
 
 @Entity(name = "vacation_detail")
-public class VacationDetail {
+public class VacationDetailDTO {
 	
 	@Id
 	@GeneratedValue
@@ -23,7 +23,7 @@ public class VacationDetail {
 	private Date date;
 	@ManyToOne
 	@JoinColumn(name = "vacation_id")
-	private VacationType vacationType;
+	private VacationTypeDTO vacationType;
 	
 	public int getId() {
 		return id;
@@ -43,11 +43,11 @@ public class VacationDetail {
 		this.date = date;
 	}
 
-	public VacationType getVacationType() {
+	public VacationTypeDTO getVacationType() {
 		return vacationType;
 	}
 
-	public void setVacationType(VacationType vacationType) {
+	public void setVacationType(VacationTypeDTO vacationType) {
 		this.vacationType = vacationType;
 	}
 
