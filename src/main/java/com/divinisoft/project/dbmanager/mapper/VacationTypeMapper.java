@@ -7,7 +7,7 @@ import com.divinisoft.project.db.dao.VacationTypeDAO;
 import com.divinisoft.project.db.entity.VacationTypeDTO;
 
 @Component
-public class VacationTypeMapper extends BaseConverter<VacationTypeDTO, String> {
+public class VacationTypeMapper extends AbstractMapper<VacationTypeDTO, String> {
 	
 	@Autowired
 	VacationTypeDAO vacationTypeDAO;

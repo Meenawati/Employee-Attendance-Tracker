@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.divinisoft.project.db.dao.EmployeeDAO;
 import com.divinisoft.project.db.dao.VacationDetailDAO;
@@ -19,7 +19,7 @@ import com.divinisoft.project.model.Employee;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.model.VacationSummary;
 
-@Component
+@Service
 public class EmployeeManagerImpl implements EmployeeManager {
 	@Autowired
 	EmployeeMapper employeeMapper;
@@ -36,11 +36,6 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	@Autowired
 	VacationTypeDAO vacationTypeDAO;
 
-	public EmployeeManagerImpl() {
-		this.employeeMapper = new EmployeeMapper();
-		this.vacationDetailMapper = new VacationDetailMapper();
-	}
-
 	@Override
 	public void saveEmployee(Employee employee) {
 		EmployeeDTO employeeDTO = this.employeeMapper.convertToDTO(employee);
@@ -55,9 +50,11 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 	@Override
 	public List<VacationSummary> getVacationSummary(int employeeId) {
-		Map<String, VacationSummary> map = new HashMap<String, VacationSummary>();
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
+		
+		Map<String, VacationSummary> map = new HashMap<String, VacationSummary>();
 		List<VacationDetailDTO> vaDetailDTOs = employeeDTO.getVacationDetails();
+		
 		for (VacationDetailDTO vDetailDTO : vaDetailDTOs) {
 			String vacationType = vDetailDTO.getVacationType().getVacationType();
 			VacationSummary vSummary;

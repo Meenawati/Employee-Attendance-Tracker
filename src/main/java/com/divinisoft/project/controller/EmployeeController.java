@@ -30,7 +30,7 @@ public class EmployeeController {
 		return employeeManager.getEmployees();
 	}
 
-	@RequestMapping(value = "/employees/addEmployee", method = RequestMethod.PUT)
+	@RequestMapping(value = "/employees/addEmployee", method = RequestMethod.POST)
 	public void addEmployee(@RequestBody Employee employee) {
 		this.employeeManager.saveEmployee(employee);
 	}
@@ -45,7 +45,7 @@ public class EmployeeController {
 		return this.employeeManager.getVacationSummary(id);
 	}
 
-	@RequestMapping(value = "/employees/{id}/addVacation", method = RequestMethod.PUT)
+	@RequestMapping(value = "/employees/{id}/vacations/{vacationId}", method = RequestMethod.PUT)
 	public void addVacation(@PathVariable("id") int id, @RequestBody VacationDetail vacation) {
 		// TODO: Need vacation detail to save and not id ?
 		this.employeeManager.saveVacation(id, vacation);

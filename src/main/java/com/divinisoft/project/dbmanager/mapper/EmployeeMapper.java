@@ -6,7 +6,7 @@ import com.divinisoft.project.db.entity.EmployeeDTO;
 import com.divinisoft.project.model.Employee;
 
 @Component
-public class EmployeeMapper extends BaseConverter<EmployeeDTO, Employee> {
+public class EmployeeMapper extends AbstractMapper<EmployeeDTO, Employee> {
 
 	@Override
 	public Employee convertToModel(EmployeeDTO dto) {

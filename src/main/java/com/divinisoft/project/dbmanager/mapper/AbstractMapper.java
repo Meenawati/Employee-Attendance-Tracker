@@ -3,7 +3,7 @@ package com.divinisoft.project.dbmanager.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseConverter<D, M> {
+public abstract class AbstractMapper<D, M> {
 
 	public abstract M convertToModel(D dto);
 

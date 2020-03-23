@@ -9,7 +9,7 @@ import com.divinisoft.project.db.entity.VacationDetailDTO;
 import com.divinisoft.project.model.VacationDetail;
 
 @Component
-public class VacationDetailMapper extends BaseConverter<VacationDetailDTO, VacationDetail> {
+public class VacationDetailMapper extends AbstractMapper<VacationDetailDTO, VacationDetail> {
 	@Autowired
 	VacationTypeMapper vacationTypeMapper;
 
