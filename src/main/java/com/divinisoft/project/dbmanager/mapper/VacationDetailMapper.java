@@ -1,11 +1,17 @@
-package com.divinisoft.project.converter;
+package com.divinisoft.project.dbmanager.mapper;
 
 import java.util.List;
 
-import com.divinisoft.project.hibernate.entity.VacationDetailDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.divinisoft.project.db.entity.VacationDetailDTO;
 import com.divinisoft.project.model.VacationDetail;
 
-public class VacationDetailConverter extends BaseConverter<VacationDetailDTO, VacationDetail> {
+@Component
+public class VacationDetailMapper extends BaseConverter<VacationDetailDTO, VacationDetail> {
+	@Autowired
+	VacationTypeMapper vacationTypeMapper;
 
 	@Override
 	public VacationDetail convertToModel(VacationDetailDTO dto) {
@@ -23,13 +29,12 @@ public class VacationDetailConverter extends BaseConverter<VacationDetailDTO, Va
 
 	@Override
 	public VacationDetailDTO convertToDTO(VacationDetail model) {
-		VacationTypeConverter vacationTypeConverter = new VacationTypeConverter();
 		VacationDetailDTO vDetailDTO = new VacationDetailDTO();
 		if (model.getVacationId() != null) {
 			vDetailDTO.setId(model.getVacationId());
 		}
 		vDetailDTO.setDate(model.getDate());
-		vDetailDTO.setVacationType(vacationTypeConverter.convertToDTO(model.getVacationType()));
+		vDetailDTO.setVacationType(this.vacationTypeMapper.convertToDTO(model.getVacationType()));
 		return vDetailDTO;
 	}
 

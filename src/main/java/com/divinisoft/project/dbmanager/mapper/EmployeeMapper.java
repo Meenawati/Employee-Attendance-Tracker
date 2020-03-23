@@ -1,17 +1,12 @@
-package com.divinisoft.project.converter;
+package com.divinisoft.project.dbmanager.mapper;
 
-import java.util.List;
+import org.springframework.stereotype.Component;
 
-import com.divinisoft.project.hibernate.entity.EmployeeDTO;
+import com.divinisoft.project.db.entity.EmployeeDTO;
 import com.divinisoft.project.model.Employee;
-import com.divinisoft.project.model.VacationSummary;
 
-public class EmployeeConverter extends BaseConverter<EmployeeDTO, Employee> {
-	VacationDetailConverter vdConverter;
-
-	public EmployeeConverter() {
-		vdConverter = new VacationDetailConverter();
-	}
+@Component
+public class EmployeeMapper extends BaseConverter<EmployeeDTO, Employee> {
 
 	@Override
 	public Employee convertToModel(EmployeeDTO dto) {
@@ -25,17 +20,11 @@ public class EmployeeConverter extends BaseConverter<EmployeeDTO, Employee> {
 	@Override
 	public EmployeeDTO convertToDTO(Employee model) {
 		EmployeeDTO employeeDTO = new EmployeeDTO();
-		// TODO: what if id is null
 		if (model.getId() != null) {
 			employeeDTO.setId(model.getId());
 		}
 		employeeDTO.setName(model.getName());
 		employeeDTO.setDepartment(model.getDepartment());
 		return employeeDTO;
-	}
-
-	public List<VacationSummary> getVacationSummary(int employeeId) {
-		// TODO:
-		return null;
 	}
 }

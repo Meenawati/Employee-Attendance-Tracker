@@ -1,4 +1,4 @@
-package com.divinisoft.project.hibernate.entity;
+package com.divinisoft.project.db.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class EmployeeDTO {
 	private int id;
 	private String name;
 	private String department;
-	@Cascade({ CascadeType.ALL })
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	@OneToMany
 	@JoinColumn(name = "employee_id")
 	private List<VacationDetailDTO> vacationDetails = new ArrayList<VacationDetailDTO>();

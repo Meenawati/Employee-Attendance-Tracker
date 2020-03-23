@@ -16,16 +16,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.divinisoft.project.hibernate.entity.EmployeeDTO;
-import com.divinisoft.project.hibernate.entity.VacationDetailDTO;
-import com.divinisoft.project.hibernate.entity.VacationTypeDTO;
-import com.divinisoft.project.repository.EmployeeRepository;
+import com.divinisoft.project.db.dao.EmployeeDAO;
+import com.divinisoft.project.db.entity.EmployeeDTO;
+import com.divinisoft.project.db.entity.VacationDetailDTO;
+import com.divinisoft.project.db.entity.VacationTypeDTO;
 
 public class AppTest {
 	private static SessionFactory factory;
 
 	@Autowired
-	EmployeeRepository employeeRepo;
+	EmployeeDAO employeeRepo;
 
 	@BeforeClass
 	public static void hibernateSetup() {

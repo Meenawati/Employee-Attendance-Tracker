@@ -1,4 +1,4 @@
-package com.divinisoft.project.hibernate.entity;
+package com.divinisoft.project.db.entity;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ public class VacationDetailDTO {
 	private int id;
 	@Column(name = "Date")
 	private Date date;
-	@Cascade({ CascadeType.ALL })
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	@ManyToOne
 	@JoinColumn(name = "vacation_id")
 	private VacationTypeDTO vacationType;

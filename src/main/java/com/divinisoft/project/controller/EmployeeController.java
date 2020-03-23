@@ -9,55 +9,60 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.divinisoft.project.dbmanager.EmployeeManager;
 import com.divinisoft.project.model.Employee;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.model.VacationSummary;
-import com.divinisoft.project.service.EmployeeService;
 
 @RestController
 public class EmployeeController {
 
 	@Autowired
-	public EmployeeService employeeService;
+	public EmployeeManager employeeManager;
 
 	@RequestMapping(value = "/employees/{id}")
 	public Employee getEmployee(@PathVariable("id") int id) {
-		return employeeService.getEmployee(id);
+		return employeeManager.getEmployee(id);
+	}
+
+	@RequestMapping(value = "/employees")
+	public List<Employee> getEmployees() {
+		return employeeManager.getEmployees();
 	}
 
 	@RequestMapping(value = "/employees/addEmployee", method = RequestMethod.PUT)
 	public void addEmployee(@RequestBody Employee employee) {
-		this.employeeService.saveEmployee(employee);
+		this.employeeManager.saveEmployee(employee);
 	}
 
 	@RequestMapping(value = "/employees/{id}/vacations")
 	public List<VacationDetail> getVacations(@PathVariable("id") int id) {
-		return this.employeeService.getVacations(id);
+		return this.employeeManager.getVacations(id);
 	}
 
 	@RequestMapping(value = "/employees/{id}/vacations/summary")
 	public List<VacationSummary> getVacationSummary(@PathVariable("id") int id) {
-		return this.employeeService.getVacationSummary(id);
+		return this.employeeManager.getVacationSummary(id);
 	}
 
 	@RequestMapping(value = "/employees/{id}/addVacation", method = RequestMethod.PUT)
 	public void addVacation(@PathVariable("id") int id, @RequestBody VacationDetail vacation) {
 		// TODO: Need vacation detail to save and not id ?
-		this.employeeService.saveVacation(id, vacation);
+		this.employeeManager.saveVacation(id, vacation);
 	}
 
 	@RequestMapping(value = "/employees/{id}/vacations", method = RequestMethod.POST)
 	public void addVacations(@PathVariable("id") int id, @RequestBody List<VacationDetail> vacationDetails) {
-		this.employeeService.saveVacations(id, vacationDetails);
+		this.employeeManager.saveVacations(id, vacationDetails);
 	}
 
-//	@RequestMapping(value = "/employees/{id}", method = RequestMethod.DELETE)
-//	public void deleteEmployee(@PathVariable("id") int id) {
-//		this.deleteEmployee(id);
-//	}
+	@RequestMapping(value = "/employees/{id}", method = RequestMethod.DELETE)
+	public void deleteEmployee(@PathVariable("id") int id) {
+		this.employeeManager.deleteEmployee(id);
+	}
 
 	@RequestMapping(value = "/employees/{id}/vacations/{vacationId}", method = RequestMethod.DELETE)
 	public void cancelVacation(@PathVariable("id") int id, @PathVariable("vacationId") int vacationId) {
-		this.employeeService.cancelVacation(id, vacationId);
+		this.employeeManager.cancelVacation(id, vacationId);
 	}
 }

@@ -1,4 +1,4 @@
-package com.divinisoft.project.service;
+package com.divinisoft.project.dbmanager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,40 +8,49 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.divinisoft.project.converter.EmployeeConverter;
-import com.divinisoft.project.converter.VacationDetailConverter;
-import com.divinisoft.project.hibernate.entity.EmployeeDTO;
-import com.divinisoft.project.hibernate.entity.VacationDetailDTO;
+import com.divinisoft.project.db.dao.EmployeeDAO;
+import com.divinisoft.project.db.dao.VacationDetailDAO;
+import com.divinisoft.project.db.dao.VacationTypeDAO;
+import com.divinisoft.project.db.entity.EmployeeDTO;
+import com.divinisoft.project.db.entity.VacationDetailDTO;
+import com.divinisoft.project.dbmanager.mapper.EmployeeMapper;
+import com.divinisoft.project.dbmanager.mapper.VacationDetailMapper;
 import com.divinisoft.project.model.Employee;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.model.VacationSummary;
-import com.divinisoft.project.repository.EmployeeRepository;
-import com.divinisoft.project.repository.VacationDetailRepository;
 
-@Component(value = "employeeService")
-public class EmployeeServiceImpl implements EmployeeService {
-	EmployeeConverter employeeConverter;
-	VacationDetailConverter vacationDetailConverter;
+@Component
+public class EmployeeManagerImpl implements EmployeeManager {
 	@Autowired
-	EmployeeRepository employeeDAO;
+	EmployeeMapper employeeMapper;
+	
 	@Autowired
-	VacationDetailRepository vacationDetailRepository;
+	VacationDetailMapper vacationDetailMapper;
+	
+	@Autowired
+	EmployeeDAO employeeDAO;
+	
+	@Autowired
+	VacationDetailDAO vacationDetailDAO;
+	
+	@Autowired
+	VacationTypeDAO vacationTypeDAO;
 
-	public EmployeeServiceImpl() {
-		this.employeeConverter = new EmployeeConverter();
-		this.vacationDetailConverter = new VacationDetailConverter();
+	public EmployeeManagerImpl() {
+		this.employeeMapper = new EmployeeMapper();
+		this.vacationDetailMapper = new VacationDetailMapper();
 	}
 
 	@Override
 	public void saveEmployee(Employee employee) {
-		EmployeeDTO employeeDTO = this.employeeConverter.convertToDTO(employee);
+		EmployeeDTO employeeDTO = this.employeeMapper.convertToDTO(employee);
 		this.employeeDAO.save(employeeDTO);
 	}
 
 	@Override
 	public Employee getEmployee(int employeeId) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		return this.employeeConverter.convertToModel(employeeDTO);
+		return this.employeeMapper.convertToModel(employeeDTO);
 	}
 
 	@Override
@@ -70,7 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void saveVacation(int employeeId, VacationDetail vacationDetail) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		VacationDetailDTO vacationDetailDTO = this.vacationDetailConverter.convertToDTO(vacationDetail);
+		VacationDetailDTO vacationDetailDTO = this.vacationDetailMapper.convertToDTO(vacationDetail);
 		employeeDTO.getVacationDetails().add(vacationDetailDTO);
 		this.employeeDAO.save(employeeDTO);
 	}
@@ -78,20 +87,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void saveVacations(int employeeId, List<VacationDetail> vacationDetails) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		List<VacationDetailDTO> vacationDetailDTOs = this.vacationDetailConverter.convertToDTOs(vacationDetails);
+		List<VacationDetailDTO> vacationDetailDTOs = this.vacationDetailMapper.convertToDTOs(vacationDetails);
 		employeeDTO.getVacationDetails().addAll(vacationDetailDTOs);
 		this.employeeDAO.save(employeeDTO);
 	}
 
 	@Override
 	public void cancelVacation(int employeeId, int vacationDetailId) {
-		this.vacationDetailRepository.deleteById(vacationDetailId);
+		VacationDetailDTO vacationDetailDTO = this.vacationDetailDAO.getOne(vacationDetailId);
+		vacationDetailDTO.setVacationType(null);
+		this.vacationDetailDAO.delete(vacationDetailDTO);
 	}
 
 	@Override
 	public List<VacationDetail> getVacations(int employeeId) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		return this.vacationDetailConverter.convertToModels(employeeDTO.getVacationDetails());
+		return this.vacationDetailMapper.convertToModels(employeeDTO.getVacationDetails());
+	}
+
+	@Override
+	public void deleteEmployee(int employeeId) {
+		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
+		employeeDTO.getVacationDetails().clear();
+		this.employeeDAO.deleteById(employeeId);
+	}
+
+	@Override
+	public List<Employee> getEmployees() {
+		List<EmployeeDTO> employeeDTOs = this.employeeDAO.findAll();
+		return this.employeeMapper.convertToModels(employeeDTOs);
 	}
 
 }

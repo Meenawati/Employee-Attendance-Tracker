@@ -1,4 +1,4 @@
-package com.divinisoft.project.converter;
+package com.divinisoft.project.dbmanager.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
