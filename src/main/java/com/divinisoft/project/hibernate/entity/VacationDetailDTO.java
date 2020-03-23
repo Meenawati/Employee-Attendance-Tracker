@@ -1,7 +1,6 @@
 package com.divinisoft.project.hibernate.entity;
 
 import java.util.Date;
-import java.time.Year;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,21 +9,23 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "vacation_detail")
 public class VacationDetailDTO {
-	
+
 	@Id
 	@GeneratedValue
 	@Column(name = "vacation_detail_id")
 	private int id;
 	@Column(name = "Date")
 	private Date date;
+	@Cascade({ CascadeType.ALL })
 	@ManyToOne
 	@JoinColumn(name = "vacation_id")
 	private VacationTypeDTO vacationType;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -36,8 +37,6 @@ public class VacationDetailDTO {
 	public Date getDate() {
 		return date;
 	}
-
-	
 
 	public void setDate(Date date) {
 		this.date = date;

@@ -22,10 +22,12 @@
 		<property name="hibernate.connection.password">root</property>
 		
 		<property name="show_sql">false</property>
+		
+		<property name="hbm2ddl.auto">update</property>
 	
 		
-		<mapping class="com.divinisoft.project.hibernate.entity.Employee"/>
-		<mapping class="com.divinisoft.project.hibernate.entity.VacationType"/>
-		<mapping class="com.divinisoft.project.hibernate.entity.VacationDetail"/>
+		<mapping class="com.divinisoft.project.hibernate.entity.EmployeeDTO"/>
+		<mapping class="com.divinisoft.project.hibernate.entity.VacationTypeDTO"/>
+		<mapping class="com.divinisoft.project.hibernate.entity.VacationDetailDTO"/>
 	</session-factory>
 </hibernate-configuration>
