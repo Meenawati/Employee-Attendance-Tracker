@@ -1,9 +1,13 @@
-package com.divinisoft.project.db.entity;
+package com.divinisoft.project.db.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.Hibernate;
 
 @Entity(name = "vacation_type")
 public class VacationTypeDTO {
@@ -16,10 +20,6 @@ public class VacationTypeDTO {
 	private String vacationType;
 	@Column(name = "total_days")
 	private int days;
-
-	public VacationTypeDTO() {
-
-	}
 
 	public VacationTypeDTO(String vacationType, int days) {
 		this.vacationType = vacationType;
@@ -48,6 +48,31 @@ public class VacationTypeDTO {
 
 	public void setDays(int days) {
 		this.days = days;
+	}
+
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(13, 37)
+				.append(this.getVacationType())
+				.toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (!(Hibernate.getClass(this).equals(Hibernate.getClass(obj)))) {
+			return false;
+		}
+		VacationTypeDTO otherDto = (VacationTypeDTO) obj;
+
+		return new EqualsBuilder()
+				.append(this.getVacationType(), otherDto.getVacationType())
+				.isEquals();
 	}
 
 }

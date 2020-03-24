@@ -1,8 +1,11 @@
 package com.divinisoft.project.model;
 
+import javax.validation.constraints.NotBlank;
+
 public class Employee {
 
 	private Integer id;
+	@NotBlank(message = "employee name cannot be null or empty")
 	private String name;
 	private String department;
 

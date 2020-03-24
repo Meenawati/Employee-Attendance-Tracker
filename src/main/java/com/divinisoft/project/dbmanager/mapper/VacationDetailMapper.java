@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.divinisoft.project.db.entity.VacationDetailDTO;
+import com.divinisoft.project.db.dto.VacationDetailDTO;
 import com.divinisoft.project.model.VacationDetail;
 
 @Component

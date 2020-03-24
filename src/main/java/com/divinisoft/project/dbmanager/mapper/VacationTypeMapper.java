@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.divinisoft.project.db.dao.VacationTypeDAO;
-import com.divinisoft.project.db.entity.VacationTypeDTO;
+import com.divinisoft.project.db.dto.VacationTypeDTO;
 
 @Component
 public class VacationTypeMapper extends AbstractMapper<VacationTypeDTO, String> {

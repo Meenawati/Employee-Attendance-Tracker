@@ -2,10 +2,15 @@ package com.divinisoft.project.model;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class VacationDetail {
 
 	private Integer vacationId;
+	@NotBlank(message = "vacation type cannot be null or empty")
 	private String vacationType;
+	@NotNull(message = "vacation date cannot be null")
 	private Date date;
 
 	public String getVacationType() {

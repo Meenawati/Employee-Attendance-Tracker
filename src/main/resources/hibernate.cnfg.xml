@@ -26,8 +26,8 @@
 		<property name="hbm2ddl.auto">update</property>
 	
 		
-		<mapping class="com.divinisoft.project.hibernate.entity.EmployeeDTO"/>
-		<mapping class="com.divinisoft.project.hibernate.entity.VacationTypeDTO"/>
-		<mapping class="com.divinisoft.project.hibernate.entity.VacationDetailDTO"/>
+		<mapping class="com.divinisoft.project.db.dto.EmployeeDTO"/>
+		<mapping class="com.divinisoft.project.db.dto.VacationTypeDTO"/>
+		<mapping class="com.divinisoft.project.db.dto.VacationDetailDTO"/>
 	</session-factory>
 </hibernate-configuration>

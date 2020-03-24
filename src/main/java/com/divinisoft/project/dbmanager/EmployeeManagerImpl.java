@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import com.divinisoft.project.db.dao.EmployeeDAO;
 import com.divinisoft.project.db.dao.VacationDetailDAO;
 import com.divinisoft.project.db.dao.VacationTypeDAO;
-import com.divinisoft.project.db.entity.EmployeeDTO;
-import com.divinisoft.project.db.entity.VacationDetailDTO;
+import com.divinisoft.project.db.dto.EmployeeDTO;
+import com.divinisoft.project.db.dto.VacationDetailDTO;
 import com.divinisoft.project.dbmanager.mapper.EmployeeMapper;
 import com.divinisoft.project.dbmanager.mapper.VacationDetailMapper;
 import com.divinisoft.project.model.Employee;
@@ -76,8 +76,10 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	@Override
 	public void saveVacation(int employeeId, VacationDetail vacationDetail) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		VacationDetailDTO vacationDetailDTO = this.vacationDetailMapper.convertToDTO(vacationDetail);
-		employeeDTO.getVacationDetails().add(vacationDetailDTO);
+		VacationDetailDTO existingVacation = this.vacationDetailDAO.getOne(vacationDetail.getVacationId());
+		VacationDetailDTO updatedVacation = this.vacationDetailMapper.convertToDTO(vacationDetail);
+		employeeDTO.getVacationDetails().remove(existingVacation);
+		employeeDTO.getVacationDetails().add(updatedVacation);
 		this.employeeDAO.save(employeeDTO);
 	}
 

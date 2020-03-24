@@ -2,6 +2,8 @@ package com.divinisoft.project.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +33,7 @@ public class EmployeeController {
 	}
 
 	@RequestMapping(value = "/employees/addEmployee", method = RequestMethod.POST)
-	public void addEmployee(@RequestBody Employee employee) {
+	public void addEmployee(@RequestBody @Valid Employee employee) {
 		this.employeeManager.saveEmployee(employee);
 	}
 

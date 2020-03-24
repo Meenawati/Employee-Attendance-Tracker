@@ -17,9 +17,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.divinisoft.project.db.dao.EmployeeDAO;
-import com.divinisoft.project.db.entity.EmployeeDTO;
-import com.divinisoft.project.db.entity.VacationDetailDTO;
-import com.divinisoft.project.db.entity.VacationTypeDTO;
+import com.divinisoft.project.db.dto.EmployeeDTO;
+import com.divinisoft.project.db.dto.VacationDetailDTO;
+import com.divinisoft.project.db.dto.VacationTypeDTO;
 
 public class AppTest {
 	private static SessionFactory factory;
@@ -64,7 +64,9 @@ public class AppTest {
 			vacationDetail2.setDate(dateVal2);
 			vacationDetail2.setVacationType(v2);
 
-			EmployeeDTO emp1 = new EmployeeDTO("John", "Android Developer");
+			EmployeeDTO emp1 = new EmployeeDTO();
+			emp1.setName("John");
+			emp1.setDepartment("Android Developer");
 			emp1.getVacationDetails().add(vacationDetail1);
 			emp1.getVacationDetails().add(vacationDetail2);
 

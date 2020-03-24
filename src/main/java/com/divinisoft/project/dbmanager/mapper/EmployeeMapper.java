@@ -2,7 +2,7 @@ package com.divinisoft.project.dbmanager.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.divinisoft.project.db.entity.EmployeeDTO;
+import com.divinisoft.project.db.dto.EmployeeDTO;
 import com.divinisoft.project.model.Employee;
 
 @Component
