@@ -16,10 +16,16 @@ public class VacationTypeDTO {
 	@GeneratedValue
 	@Column(name = "vacation_id")
 	private int vacationId;
+	
 	@Column(name = "vacation_type")
 	private String vacationType;
+	
 	@Column(name = "total_days")
 	private int days;
+	
+	public VacationTypeDTO() {
+		
+	}
 
 	public VacationTypeDTO(String vacationType, int days) {
 		this.vacationType = vacationType;

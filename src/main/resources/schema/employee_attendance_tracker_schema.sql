@@ -1,3 +1,4 @@
+drop database employee_attendance_tracker;
 
 create database employee_attendance_tracker;
 
@@ -26,3 +27,7 @@ create table vacation_detail(
 	index(employee_id, vacation_id, Date)
 );
     
+INSERT INTO vacation_type (vacation_type, total_days) VALUES ('VACATION', 10);
+INSERT INTO vacation_type (vacation_type, total_days) VALUES ('SICK', 10);
+INSERT INTO vacation_type (vacation_type, total_days) VALUES ('PARENTAL', 5);
+INSERT INTO vacation_type (vacation_type, total_days) VALUES ('MARRIAGE', 5);

@@ -22,12 +22,19 @@ public class EmployeeDTO {
 	@GeneratedValue
 	@Column(name = "employee_id")
 	private int id;
+	
 	private String name;
+	
 	private String department;
+	
 	@Cascade({ CascadeType.ALL })
 	@OneToMany
 	@JoinColumn(name = "employee_id")
 	private List<VacationDetailDTO> vacationDetails = new ArrayList<VacationDetailDTO>();
+	
+	public EmployeeDTO() {
+		
+	}
 
 	public List<VacationDetailDTO> getVacationDetails() {
 		return vacationDetails;

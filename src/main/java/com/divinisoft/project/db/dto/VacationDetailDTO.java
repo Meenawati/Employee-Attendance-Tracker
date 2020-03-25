@@ -22,12 +22,18 @@ public class VacationDetailDTO {
 	@GeneratedValue
 	@Column(name = "vacation_detail_id")
 	private int id;
+	
 	@Column(name = "Date")
 	private Date date;
+	
 	@Cascade({ CascadeType.ALL })
 	@ManyToOne
 	@JoinColumn(name = "vacation_id")
 	private VacationTypeDTO vacationType;
+	
+	public VacationDetailDTO() {
+		
+	}
 
 	public int getId() {
 		return id;
@@ -56,7 +62,8 @@ public class VacationDetailDTO {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(13, 37)
-				.append(this.getId())
+				.append(this.getVacationType())
+				.append(this.getDate())
 				.toHashCode();
 	}
 
@@ -74,7 +81,8 @@ public class VacationDetailDTO {
 		VacationDetailDTO otherDto = (VacationDetailDTO) obj;
 
 		return new EqualsBuilder()
-				.append(this.getId(), otherDto.getId())
+				.append(this.getVacationType(), otherDto.getVacationType())
+				.append(this.getDate(), otherDto.getDate())
 				.isEquals();
 	}
 
