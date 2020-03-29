@@ -23,7 +23,7 @@ create table vacation_detail(
 	foreign key (employee_id) references employee_detail(employee_id),
 	vacation_id int,
 	foreign key (vacation_id) references vacation_type(vacation_id),
-	Date date,
+	date date,
 	index(employee_id, vacation_id, Date)
 );
     

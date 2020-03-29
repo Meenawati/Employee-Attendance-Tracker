@@ -1,17 +1,15 @@
 package com.divinisoft.project.model;
 
-import java.util.Date;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class VacationDetail {
+public class VacationDetail implements Comparable<VacationDetail> {
 
-	private Integer vacationId;
+	private Integer vacationDetailId;
 	@NotBlank(message = "vacation type cannot be null or empty")
 	private String vacationType;
 	@NotNull(message = "vacation date cannot be null")
-	private Date date;
+	private String date;
 
 	public String getVacationType() {
 		return vacationType;
@@ -21,19 +19,24 @@ public class VacationDetail {
 		this.vacationType = vacationType;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public Integer getVacationId() {
-		return vacationId;
+	public Integer getVacationDetailId() {
+		return this.vacationDetailId;
 	}
 
-	public void setVacationId(int vacationId) {
-		this.vacationId = vacationId;
+	public void setVacationDetailId(int vacationId) {
+		this.vacationDetailId = vacationId;
+	}
+
+	@Override
+	public int compareTo(VacationDetail vacationDetail) {
+		return vacationDetail.getDate().compareTo(this.getDate());
 	}
 }

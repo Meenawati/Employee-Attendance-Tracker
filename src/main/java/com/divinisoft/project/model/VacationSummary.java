@@ -1,6 +1,6 @@
 package com.divinisoft.project.model;
 
-public class VacationSummary {
+public class VacationSummary implements Comparable<VacationSummary> {
 
 	private String vacationType;
 	private int totalDays;
@@ -28,6 +28,11 @@ public class VacationSummary {
 
 	public void setDaysTaken(int daysTaken) {
 		this.daysTaken = daysTaken;
+	}
+
+	@Override
+	public int compareTo(VacationSummary vacationSummary) {
+		return vacationSummary.getVacationType().compareTo(this.vacationType);
 	}
 
 }

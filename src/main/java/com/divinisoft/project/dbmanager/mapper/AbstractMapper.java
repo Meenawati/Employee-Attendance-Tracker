@@ -12,7 +12,9 @@ public abstract class AbstractMapper<D, M> {
 	public List<M> convertToModels(List<D> dtos) {
 		List<M> models = new ArrayList<M>();
 		for (D dtoD : dtos) {
-			models.add(this.convertToModel(dtoD));
+			if (this.convertToModel(dtoD) != null) {
+				models.add(this.convertToModel(dtoD));
+			}
 		}
 
 		return models;
@@ -21,7 +23,9 @@ public abstract class AbstractMapper<D, M> {
 	public List<D> convertToDTOs(List<M> models) {
 		List<D> dtos = new ArrayList<D>();
 		for (M dto : models) {
-			dtos.add(this.convertToDTO(dto));
+			if (this.convertToDTO(dto) != null) {
+				dtos.add(this.convertToDTO(dto));
+			}
 		}
 
 		return dtos;

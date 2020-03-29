@@ -1,6 +1,7 @@
 package com.divinisoft.project.dbmanager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,21 +19,22 @@ import com.divinisoft.project.dbmanager.mapper.VacationDetailMapper;
 import com.divinisoft.project.model.Employee;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.model.VacationSummary;
+import com.divinisoft.project.utility.DateUtility;
 
 @Service
 public class EmployeeManagerImpl implements EmployeeManager {
 	@Autowired
 	EmployeeMapper employeeMapper;
-	
+
 	@Autowired
 	VacationDetailMapper vacationDetailMapper;
-	
+
 	@Autowired
 	EmployeeDAO employeeDAO;
-	
+
 	@Autowired
 	VacationDetailDAO vacationDetailDAO;
-	
+
 	@Autowired
 	VacationTypeDAO vacationTypeDAO;
 
@@ -51,32 +53,42 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	@Override
 	public List<VacationSummary> getVacationSummary(int employeeId) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		
+
 		Map<String, VacationSummary> map = new HashMap<String, VacationSummary>();
 		List<VacationDetailDTO> vaDetailDTOs = employeeDTO.getVacationDetails();
-		
+
 		for (VacationDetailDTO vDetailDTO : vaDetailDTOs) {
-			String vacationType = vDetailDTO.getVacationType().getVacationType();
-			VacationSummary vSummary;
-			if (!map.keySet().contains(vacationType)) {
-				vSummary = new VacationSummary();
-				vSummary.setVacationType(vacationType);
-				vSummary.setTotalDays(vDetailDTO.getVacationType().getDays());
-				vSummary.setDaysTaken(1);
-				map.put(vacationType, vSummary);
-			} else {
-				vSummary = map.get(vacationType);
-				vSummary.setDaysTaken(vSummary.getDaysTaken() + 1);
-				map.replace(vacationType, vSummary);
+			String dateString = DateUtility.formatDateToString(vDetailDTO.getDate());
+
+			// get all vacations for the current year
+			if (dateString.compareTo(DateUtility.getStartDateStringOfCurrentYear()) >= 0) {
+				String vacationType = vDetailDTO.getVacationType().getVacationType();
+				VacationSummary vSummary;
+				if (!map.keySet().contains(vacationType)) {
+					vSummary = new VacationSummary();
+					vSummary.setVacationType(vacationType);
+					vSummary.setTotalDays(vDetailDTO.getVacationType().getDays());
+					vSummary.setDaysTaken(1);
+					map.put(vacationType, vSummary);
+				} else {
+					vSummary = map.get(vacationType);
+					vSummary.setDaysTaken(vSummary.getDaysTaken() + 1);
+					map.replace(vacationType, vSummary);
+				}
+
 			}
 		}
-		return new ArrayList<>(map.values());
+
+		List<VacationSummary> vacationSummaries = new ArrayList<>(map.values());
+		Collections.sort(vacationSummaries);
+		return vacationSummaries;
 	}
 
 	@Override
 	public void saveVacation(int employeeId, VacationDetail vacationDetail) {
+		this.vacationDetailMapper.validateVacationDate(vacationDetail.getDate());
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		VacationDetailDTO existingVacation = this.vacationDetailDAO.getOne(vacationDetail.getVacationId());
+		VacationDetailDTO existingVacation = this.vacationDetailDAO.getOne(vacationDetail.getVacationDetailId());
 		VacationDetailDTO updatedVacation = this.vacationDetailMapper.convertToDTO(vacationDetail);
 		employeeDTO.getVacationDetails().remove(existingVacation);
 		employeeDTO.getVacationDetails().add(updatedVacation);
@@ -101,7 +113,9 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	@Override
 	public List<VacationDetail> getVacations(int employeeId) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		return this.vacationDetailMapper.convertToModels(employeeDTO.getVacationDetails());
+		List<VacationDetail> vDetails = this.vacationDetailMapper.convertToModels(employeeDTO.getVacationDetails());
+		Collections.sort(vDetails);
+		return vDetails;
 	}
 
 	@Override
@@ -116,5 +130,4 @@ public class EmployeeManagerImpl implements EmployeeManager {
 		List<EmployeeDTO> employeeDTOs = this.employeeDAO.findAll();
 		return this.employeeMapper.convertToModels(employeeDTOs);
 	}
-
 }

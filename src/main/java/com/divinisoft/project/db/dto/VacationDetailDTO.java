@@ -23,7 +23,7 @@ public class VacationDetailDTO {
 	@Column(name = "vacation_detail_id")
 	private int id;
 	
-	@Column(name = "Date")
+	@Column(name = "date")
 	private Date date;
 	
 	@Cascade({ CascadeType.ALL })

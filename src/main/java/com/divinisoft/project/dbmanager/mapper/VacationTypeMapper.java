@@ -19,7 +19,11 @@ public class VacationTypeMapper extends AbstractMapper<VacationTypeDTO, String> 
 
 	@Override
 	public VacationTypeDTO convertToDTO(String model) {
-		return this.vacationTypeDAO.findByName(model).get(0);
+		VacationTypeDTO vTypeDTO = this.vacationTypeDAO.findByName(model);
+		if(vTypeDTO == null) {
+			throw new IllegalArgumentException("Invalid vacation type supplied");
+		}
+		return vTypeDTO;
 	}
 
 }
