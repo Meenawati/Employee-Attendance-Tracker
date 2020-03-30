@@ -86,7 +86,7 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 	@Override
 	public void saveVacation(int employeeId, VacationDetail vacationDetail) {
-		this.vacationDetailMapper.validateVacationDate(vacationDetail.getDate());
+		this.throwErrorIfVacationNotAvailable(employeeId, vacationDetail.getVacationType());
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
 		VacationDetailDTO existingVacation = this.vacationDetailDAO.getOne(vacationDetail.getVacationDetailId());
 		VacationDetailDTO updatedVacation = this.vacationDetailMapper.convertToDTO(vacationDetail);
@@ -98,7 +98,13 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	@Override
 	public void saveVacations(int employeeId, List<VacationDetail> vacationDetails) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		List<VacationDetailDTO> vacationDetailDTOs = this.vacationDetailMapper.convertToDTOs(vacationDetails);
+		List<VacationDetailDTO> vacationDetailDTOs = new ArrayList<>();
+		for(VacationDetail vDetail : vacationDetails) {
+			this.throwErrorIfVacationNotAvailable(employeeId, vDetail.getVacationType());
+			VacationDetailDTO vDetailDTO = this.vacationDetailMapper.convertToDTO(vDetail);
+			vacationDetailDTOs.add(vDetailDTO);
+		}
+		
 		employeeDTO.getVacationDetails().addAll(vacationDetailDTOs);
 		this.employeeDAO.save(employeeDTO);
 	}
@@ -129,5 +135,27 @@ public class EmployeeManagerImpl implements EmployeeManager {
 	public List<Employee> getEmployees() {
 		List<EmployeeDTO> employeeDTOs = this.employeeDAO.findAll();
 		return this.employeeMapper.convertToModels(employeeDTOs);
+	}
+
+	public void throwErrorIfVacationNotAvailable(int employeeId, String vacationType) {
+		boolean isVacationAvailable = true;
+		if (vacationType.equals("PARENTAL") || vacationType.equals("MARRIAGE")) {
+			isVacationAvailable = this.isVacationAvailableForParentalAndMarriage(vacationType);
+		} else {
+			List<VacationSummary> vacationSummaries = this.getVacationSummary(employeeId);
+			for (VacationSummary vSummary : vacationSummaries) {
+				if (vSummary.getVacationType().equalsIgnoreCase(vacationType)) {
+					isVacationAvailable = vSummary.getDaysTaken() < vSummary.getTotalDays();
+				}
+			}
+		}
+		if (!isVacationAvailable) {
+			throw new IllegalArgumentException("All vacations are already taken for vacation type: " + vacationType);
+		}
+	}
+	
+	public boolean isVacationAvailableForParentalAndMarriage(String vacationType) {
+		List<VacationDetailDTO> vDetailDTOs = this.vacationDetailDAO.findByVacationType(vacationType);
+		return vDetailDTOs.size() < 5;
 	}
 }
