@@ -16,7 +16,7 @@ public interface EmployeeManager {
 
 	public List<VacationSummary> getVacationSummary(int employeeId);
 
-	public List<VacationDetail> getVacations(int employeeId);
+	public List<VacationDetail> getVacations(int employeeId, String vacationType);
 
 	public void saveVacation(int employeeId, VacationDetail vacationDetail);
 

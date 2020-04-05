@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.divinisoft.project.db.dao.VacationDetailDAO;
 import com.divinisoft.project.db.dto.VacationDetailDTO;
+import com.divinisoft.project.exception.VacationValidationException;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.utility.DateUtility;
 
@@ -41,25 +42,17 @@ public class VacationDetailMapper extends AbstractMapper<VacationDetailDTO, Vaca
 		this.validateVacationDate(model.getDate());
 		Integer id = model.getVacationDetailId();
 		if (id != null) {
-			vDetailDTO = this.vDetailDAO.getOne(id);
-			if (vDetailDTO == null) {
-				throw new IllegalArgumentException("Resource not found for vacation id: " + id);
-			}
-
-			String modelDateString = model.getDate();
-			String dtoDateString = DateUtility.formatDateToString(vDetailDTO.getDate());
-			if (!modelDateString.equals(dtoDateString)) {
-				throw new IllegalArgumentException(
-						"input date is not same with existing date for the vacation id: " + id);
+			try {
+				vDetailDTO = this.vDetailDAO.getOne(id);
+			} catch (Exception e) {
+				throw new VacationValidationException("Vacation not found for vacation id: " + id);
 			}
 		} else {
-			Date inputDate = DateUtility.formatStringToDate(model.getDate());
-			vDetailDTO = this.vDetailDAO.findByDate(inputDate);
-			if (vDetailDTO == null) {
-				vDetailDTO = new VacationDetailDTO();
-				vDetailDTO.setDate(inputDate);
-			}
+			vDetailDTO = new VacationDetailDTO();
 		}
+
+		Date inputDate = DateUtility.formatStringToDate(model.getDate());
+		vDetailDTO.setDate(inputDate);
 		vDetailDTO.setVacationType(this.vacationTypeMapper.convertToDTO(model.getVacationType()));
 		return vDetailDTO;
 	}
@@ -77,13 +70,11 @@ public class VacationDetailMapper extends AbstractMapper<VacationDetailDTO, Vaca
 	public void validateVacationDate(String date) {
 		String dateString = DateUtility.formatDateToString(new Date());
 		if (date.compareTo(dateString) < 0) {
-			throw new IllegalArgumentException("Application rejected due to past vacation date supplied!");
-		}
-		else if (DateUtility.isWeekendDay(date)) {
-			throw new IllegalArgumentException("Application rejected due to vacation date falls on weekend!");
-		}
-		else if (DateUtility.isHoliday(date)) {
-			throw new IllegalArgumentException("Application rejected due to vacation date falls on holiday!");
+			throw new VacationValidationException("Application rejected due to past vacation date supplied!");
+		} else if (DateUtility.isWeekendDay(date)) {
+			throw new VacationValidationException("Application rejected due to vacation date falls on weekend!");
+		} else if (DateUtility.isHoliday(date)) {
+			throw new VacationValidationException("Application rejected due to vacation date falls on holiday!");
 		}
 	}
 }

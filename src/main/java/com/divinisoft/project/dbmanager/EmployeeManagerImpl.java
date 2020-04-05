@@ -14,8 +14,11 @@ import com.divinisoft.project.db.dao.VacationDetailDAO;
 import com.divinisoft.project.db.dao.VacationTypeDAO;
 import com.divinisoft.project.db.dto.EmployeeDTO;
 import com.divinisoft.project.db.dto.VacationDetailDTO;
+import com.divinisoft.project.db.dto.VacationTypeDTO;
 import com.divinisoft.project.dbmanager.mapper.EmployeeMapper;
 import com.divinisoft.project.dbmanager.mapper.VacationDetailMapper;
+import com.divinisoft.project.dbmanager.mapper.VacationTypeMapper;
+import com.divinisoft.project.exception.VacationValidationException;
 import com.divinisoft.project.model.Employee;
 import com.divinisoft.project.model.VacationDetail;
 import com.divinisoft.project.model.VacationSummary;
@@ -37,6 +40,9 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 	@Autowired
 	VacationTypeDAO vacationTypeDAO;
+	
+	@Autowired
+	VacationTypeMapper vacationTypeMapper;
 
 	@Override
 	public void saveEmployee(Employee employee) {
@@ -56,13 +62,15 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 		Map<String, VacationSummary> map = new HashMap<String, VacationSummary>();
 		List<VacationDetailDTO> vaDetailDTOs = employeeDTO.getVacationDetails();
+		List<VacationTypeDTO> vTypeDTOs = this.vacationTypeDAO.findAll();
 
 		for (VacationDetailDTO vDetailDTO : vaDetailDTOs) {
 			String dateString = DateUtility.formatDateToString(vDetailDTO.getDate());
 
 			// get all vacations for the current year
 			if (dateString.compareTo(DateUtility.getStartDateStringOfCurrentYear()) >= 0) {
-				String vacationType = vDetailDTO.getVacationType().getVacationType();
+				VacationTypeDTO vTypeDTO = vDetailDTO.getVacationType();
+				String vacationType = vTypeDTO.getVacationType();
 				VacationSummary vSummary;
 				if (!map.keySet().contains(vacationType)) {
 					vSummary = new VacationSummary();
@@ -78,6 +86,16 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 			}
 		}
+		
+		for(VacationTypeDTO vTypeDTO : vTypeDTOs) {
+			if(!map.keySet().contains(vTypeDTO.getVacationType())) {
+				VacationSummary vSummary = new VacationSummary();
+				vSummary.setVacationType(vTypeDTO.getVacationType());
+				vSummary.setTotalDays(vTypeDTO.getDays());
+				vSummary.setDaysTaken(0);
+				map.put(vTypeDTO.getVacationType(), vSummary);
+			}
+		}
 
 		List<VacationSummary> vacationSummaries = new ArrayList<>(map.values());
 		Collections.sort(vacationSummaries);
@@ -86,10 +104,13 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 	@Override
 	public void saveVacation(int employeeId, VacationDetail vacationDetail) {
-		this.throwErrorIfVacationNotAvailable(employeeId, vacationDetail.getVacationType());
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
 		VacationDetailDTO existingVacation = this.vacationDetailDAO.getOne(vacationDetail.getVacationDetailId());
 		VacationDetailDTO updatedVacation = this.vacationDetailMapper.convertToDTO(vacationDetail);
+		
+		if(!existingVacation.getVacationType().getVacationType().equals(vacationDetail.getVacationType())) {
+			this.throwErrorIfVacationNotAvailable(employeeId, vacationDetail.getVacationType());
+		}
 		employeeDTO.getVacationDetails().remove(existingVacation);
 		employeeDTO.getVacationDetails().add(updatedVacation);
 		this.employeeDAO.save(employeeDTO);
@@ -111,15 +132,30 @@ public class EmployeeManagerImpl implements EmployeeManager {
 
 	@Override
 	public void cancelVacation(int employeeId, int vacationDetailId) {
-		VacationDetailDTO vacationDetailDTO = this.vacationDetailDAO.getOne(vacationDetailId);
-		vacationDetailDTO.setVacationType(null);
-		this.vacationDetailDAO.delete(vacationDetailDTO);
+		try {
+			VacationDetailDTO vacationDetailDTO = this.vacationDetailDAO.getOne(vacationDetailId);
+			vacationDetailDTO.setVacationType(null);
+			this.vacationDetailDAO.delete(vacationDetailDTO);
+		} catch (Exception e) {
+			throw new VacationValidationException("Vacation not found for vacation id: " + vacationDetailId);
+		}
 	}
 
 	@Override
-	public List<VacationDetail> getVacations(int employeeId) {
+	public List<VacationDetail> getVacations(int employeeId, String vacationType) {
 		EmployeeDTO employeeDTO = this.employeeDAO.getOne(employeeId);
-		List<VacationDetail> vDetails = this.vacationDetailMapper.convertToModels(employeeDTO.getVacationDetails());
+		List<VacationDetailDTO> detailDTOs = employeeDTO.getVacationDetails();
+		List<VacationDetailDTO> newDetailDTOs = new ArrayList<>();
+		if (vacationType != null) {
+			for (VacationDetailDTO detailDTO : detailDTOs) {
+				if (vacationType.equals( detailDTO.getVacationType().getVacationType())) {
+					newDetailDTOs.add(detailDTO);
+				}
+			}
+		} else {
+			newDetailDTOs.addAll(detailDTOs);
+		}
+		List<VacationDetail> vDetails = this.vacationDetailMapper.convertToModels(newDetailDTOs);
 		Collections.sort(vDetails);
 		return vDetails;
 	}
@@ -150,7 +186,7 @@ public class EmployeeManagerImpl implements EmployeeManager {
 			}
 		}
 		if (!isVacationAvailable) {
-			throw new IllegalArgumentException("All vacations are already taken for vacation type: " + vacationType);
+			throw new VacationValidationException("All vacations are already taken for vacation type: " + vacationType);
 		}
 	}
 	
